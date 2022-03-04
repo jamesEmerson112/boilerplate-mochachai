@@ -15,8 +15,8 @@ suite('Functional Tests', function () {
         .request(server)
         .get('/hello')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello Guest');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello Guest');
           done();
         });
     });
@@ -26,8 +26,8 @@ suite('Functional Tests', function () {
         .request(server)
         .get('/hello?name=xy_z')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello xy_z');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello xy_z');
           done();
         });
     });
@@ -36,18 +36,31 @@ suite('Functional Tests', function () {
       chai
         .request(server)
         .put('/travellers')
-
+        .send({ surname: 'Colombo'})
         .end(function (err, res) {
-          assert.fail();
-
+          assert.equal(res.status, 200, 'response status should be 200');
+          assert.equal(res.type, 'application/json', 'Response should be json');
+          assert.equal(res.body.name, 'Cristoforo', 'res.body.name should "Cristoforo"');
+          assert.equal(res.body.surname, 'Colombo', 'res.body.surname should be "Colombo"');             
           done();
         });
     });
     // #4
-    test('Send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
-      done();
+    test('send {surname: "da Verrazzano"}', function(done) {
+      /** place the chai-http request code here... **/
+      chai
+        .request(server)
+        .put('/travellers')
+        .send({ surname: 'da Verrazzano' })
+        /** place your tests inside the callback **/
+        .end(function(err, res) {
+          assert.equal(res.status, 200, 'response status should be 200');
+          assert.equal(res.type, 'application/json', 'Response should be json');
+          assert.equal(res.body.name, 'Giovanni');
+          assert.equal(res.body.surname, 'da Verrazzano');
+    
+          done();
+        });
     });
   });
 });
